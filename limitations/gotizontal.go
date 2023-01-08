@@ -34,6 +34,9 @@ func (f GorizontalLimitation) PlaceValues(matrix [][]float64, rightPart []float6
 	matrix[m+cord2*2+1][equationsCounter] += 1
 
 	// ставим значения в правую часть
+	rightPart[m+cord1*2+1] += lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += -lyambdas[equationsCounter]
+
 	rightPart[equationsCounter] += -(dots[cord2].Y - dots[cord1].Y)
 
 	return matrix, rightPart

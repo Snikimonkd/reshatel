@@ -34,6 +34,8 @@ func (f VerticalLimitation) PlaceValues(matrix [][]float64, rightPart []float64,
 	matrix[m+cord2*2][equationsCounter] += 1
 
 	// ставим значения в правую часть
+	rightPart[m+cord1*2] += lyambdas[equationsCounter]
+	rightPart[m+cord2*2] += -lyambdas[equationsCounter]
 	rightPart[equationsCounter] += -(dots[cord2].X - dots[cord1].X)
 
 	return matrix, rightPart

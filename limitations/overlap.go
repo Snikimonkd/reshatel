@@ -37,6 +37,11 @@ func (f OverlapLimitation) PlaceValues(matrix [][]float64, rightPart []float64, 
 	matrix[m+cord2*2+1][equationsCounter+1] += 1
 
 	// ставим значения в правую часть
+	rightPart[m+cord1*2] += lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += lyambdas[equationsCounter+1]
+	rightPart[m+cord2*2] += -lyambdas[equationsCounter]
+	rightPart[m+cord2*2+1] += -lyambdas[equationsCounter+1]
+
 	rightPart[equationsCounter] += -(dots[cord2].X - dots[cord1].X)
 	rightPart[equationsCounter+1] += -(dots[cord2].Y - dots[cord1].Y)
 

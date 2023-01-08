@@ -4,16 +4,21 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"os"
 	"reshatel/limitations"
 )
 
-const eps = 0.000001
+const eps = 0.001
 
 func CreateMatrix(limitationsArr []limitations.LimitationInterface, dots []limitations.Dot) ([]limitations.Dot, error) {
 	amountOfEquations := 0
 	amountOfDots := len(dots)
 	for _, limitation := range limitationsArr {
 		amountOfEquations += limitation.AmountOfEquations()
+	}
+
+	if amountOfEquations > amountOfDots*2 {
+		return nil, errors.New("стопэ, тут переборчик с ограничениями")
 	}
 
 	matrixSize := amountOfDots*2 + amountOfEquations
@@ -51,15 +56,15 @@ func CreateMatrix(limitationsArr []limitations.LimitationInterface, dots []limit
 			}
 		}
 
-		limitations.Printmatrix(matrix)
-		fmt.Println("right part: ", rightPart)
+		// limitations.Printmatrix(matrix)
+		// fmt.Println("right part: ", rightPart)
 
-		deltas, ok := solve(matrix, rightPart)
-		if !ok {
-			return nil, errors.New("wtf")
+		deltas, err := solve(matrix, rightPart)
+		if err != nil {
+			return nil, err
 		}
 
-		fmt.Println("deltas:", deltas)
+		// fmt.Println("deltas:", deltas)
 
 		for i := 0; i < len(lyambdas); i++ {
 			lyambdas[i] += deltas[i]
@@ -77,9 +82,9 @@ func CreateMatrix(limitationsArr []limitations.LimitationInterface, dots []limit
 			}
 		}
 
+		// fmt.Println("lymbdas:", lyambdas)
 		fmt.Println("dots:", dots)
-		fmt.Println("lymbdas:", lyambdas)
-		fmt.Println("------------------------------------------")
+		// fmt.Println("------------------------------------------")
 
 		if flag {
 			break
@@ -95,23 +100,50 @@ func PrintDots(dots []limitations.Dot) {
 	}
 }
 
+func gnuplot(dots []limitations.Dot) {
+	f, err := os.Create("data")
+	if err != nil {
+		fmt.Println("open error:", err)
+		return
+	}
+
+	defer f.Close()
+
+	for i := 0; i < len(dots); i++ {
+		if i != 0 && i%2 == 0 {
+			_, err := f.WriteString(fmt.Sprintf("\n"))
+			if err != nil {
+				fmt.Println("write error:", err)
+				return
+			}
+		}
+		_, err := f.WriteString(fmt.Sprintf("%f\t%f\t", dots[i].X, dots[i].Y))
+		if err != nil {
+			fmt.Println("write error:", err)
+			return
+		}
+	}
+}
+
 func main() {
-	dots := []limitations.Dot{{X: 1, Y: 5}, {X: 2, Y: -12}, {X: 32, Y: -9}}
+	dots := []limitations.Dot{{X: 0, Y: 0}, {X: 23, Y: 12}, {X: 0, Y: 0}, {X: 1, Y: 7}}
 
 	limitations := []limitations.LimitationInterface{
 		// limitations.NewDistanceLimitation([]int{0, 1}, 6),
-		// limitations.NewFixLimitation([]int{0}),
-		// limitations.NewVerticalLimitation([]int{0, 1}),
+		limitations.NewVerticalLimitation([]int{0, 1}),
 		// limitations.NewGorizontalLimitation([]int{0, 2}),
-		// limitations.NewOverlapLimitation([]int{2, 3}),
-		// limitations.NewFixLimitation([]int{0}),
-		// limitations.NewVerticalLimitation([]int{0, 1}),
-		// limitations.NewDistanceLimitation([]int{0, 1}, 6),
-		// limitations.NewGorizontalLimitation([]int{0, 1}),
+		limitations.NewOverlapLimitation([]int{1, 2}),
+		// limitations.NewParallelLimitation([]int{0, 1, 2, 3}),
 		// limitations.NewPerpendicularLimitation([]int{0, 1, 2, 3}),
+		// limitations.NewGorizontalLimitation([]int{0, 1}),
+		// limitations.NewDistanceLimitation([]int{0, 1}, 5),
+		// limitations.NewDistanceLimitation([]int{0, 1}, 3),
+		limitations.NewAngleLimitation([]int{0, 1, 2, 3}, 1),
+		// limitations.NewGorizontalLimitation([]int{0, 1}),
+		limitations.NewDistanceLimitation([]int{0, 1}, 6),
+		limitations.NewDistanceLimitation([]int{2, 3}, 6),
+		// limitations.NewBelongLimitation([]int{0, 1, 2}),
 		// limitations.NewDistanceLimitation([]int{0, 1}, 6),
-		limitations.NewBelongLimitation([]int{0, 1, 2}),
-		// limitations.NewVerticalLimitation([]int{0, 1}),
 	}
 
 	dots, err := CreateMatrix(limitations, dots)
@@ -121,6 +153,7 @@ func main() {
 	}
 
 	fmt.Println("result:", dots)
+	gnuplot(dots)
 }
 
 type pair struct {
@@ -128,7 +161,7 @@ type pair struct {
 	j int
 }
 
-func solve(A [][]float64, B []float64) ([]float64, bool) {
+func solve(A [][]float64, B []float64) ([]float64, error) {
 	swap := []pair{}
 	x := []float64{}
 	for i := 0; i < len(A); i++ {
@@ -183,10 +216,11 @@ func solve(A [][]float64, B []float64) ([]float64, bool) {
 	for i := 0; i < len(x); i++ {
 		if math.IsNaN(x[i]) {
 			x[i] = 0
+			return nil, errors.New("чето непонятное вышло")
 		}
 	}
 
-	return x, true
+	return x, nil
 }
 
 func swapColumns(j int, notZeroElementIndex int, A [][]float64) {

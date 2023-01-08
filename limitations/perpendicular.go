@@ -58,6 +58,18 @@ func (f PerpendicularLimitation) PlaceValues(matrix [][]float64, rightPart []flo
 	matrix[m+cord4*2+1][m+cord2*2+1] += lyambdas[equationsCounter]
 
 	// ставим значения в правую часть
+	rightPart[m+cord1*2] += (dots[cord4].X - dots[cord3].X) * lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += (dots[cord4].Y - dots[cord3].Y) * lyambdas[equationsCounter]
+
+	rightPart[m+cord2*2] += -(dots[cord4].X - dots[cord3].X) * lyambdas[equationsCounter]
+	rightPart[m+cord2*2+1] += -(dots[cord4].Y - dots[cord3].Y) * lyambdas[equationsCounter]
+
+	rightPart[m+cord3*2] += (dots[cord2].X - dots[cord1].X) * lyambdas[equationsCounter]
+	rightPart[m+cord3*2+1] += (dots[cord2].Y - dots[cord1].Y) * lyambdas[equationsCounter]
+
+	rightPart[m+cord4*2] += -(dots[cord2].X - dots[cord1].X) * lyambdas[equationsCounter]
+	rightPart[m+cord4*2+1] += -(dots[cord2].Y - dots[cord1].Y) * lyambdas[equationsCounter]
+
 	rightPart[equationsCounter] += -((dots[cord2].X-dots[cord1].X)*(dots[cord4].X-dots[cord3].X) + (dots[cord2].Y-dots[cord1].Y)*(dots[cord4].Y-dots[cord3].Y))
 
 	return matrix, rightPart

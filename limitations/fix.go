@@ -33,6 +33,7 @@ func (f FixLimitation) PlaceValues(matrix [][]float64, rightPart []float64, dots
 	matrix[m+cord1*2+1][equationsCounter+1] += 1
 
 	// ставим значения в правую часть
+
 	// rightPart[equationsCounter] += dots[cord1].X
 	// rightPart[equationsCounter+1] += dots[cord1].Y
 

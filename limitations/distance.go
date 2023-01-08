@@ -53,6 +53,11 @@ func (d DistanceLimitation) PlaceValues(matrix [][]float64, rightPart []float64,
 	// ставим значения в правую часть
 	rightPart[equationsCounter] += -d.dF_dl(dots[cord1].X, dots[cord1].Y, dots[cord2].X, dots[cord2].Y, d.distance)
 
+	rightPart[m+cord1*2] += 2 * (dots[cord2].X - dots[cord1].X) * lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += 2 * (dots[cord2].Y - dots[cord1].Y) * lyambdas[equationsCounter]
+	rightPart[m+cord2*2] += -2 * (dots[cord2].X - dots[cord1].X) * lyambdas[equationsCounter]
+	rightPart[m+cord2*2+1] += -2 * (dots[cord2].Y - dots[cord1].Y) * lyambdas[equationsCounter]
+
 	return matrix, rightPart
 }
 

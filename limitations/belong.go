@@ -53,5 +53,12 @@ func (f BelongLimitation) PlaceValues(matrix [][]float64, rightPart []float64, d
 	// ставим значения в правую часть
 	rightPart[equationsCounter] += -((dots[cord1].X-dots[cord2].X)*(dots[cord3].Y-dots[cord1].Y) - (dots[cord1].Y-dots[cord2].Y)*(dots[cord3].X-dots[cord1].X))
 
+	rightPart[m+cord1*2] += -((dots[cord3].Y - dots[cord1].Y) + (dots[cord1].Y - dots[cord2].Y)) * lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += ((dots[cord3].X - dots[cord1].X) + (dots[cord1].X - dots[cord2].X)) * lyambdas[equationsCounter]
+	rightPart[m+cord2*2] += (dots[cord3].Y - dots[cord1].Y) * lyambdas[equationsCounter]
+	rightPart[m+cord2*2+1] += -(dots[cord3].X - dots[cord1].X) * lyambdas[equationsCounter]
+	rightPart[m+cord3*2] += (dots[cord1].Y - dots[cord2].Y) * lyambdas[equationsCounter]
+	rightPart[m+cord3*2+1] += -(dots[cord1].X - dots[cord2].X) * lyambdas[equationsCounter]
+
 	return matrix, rightPart
 }
