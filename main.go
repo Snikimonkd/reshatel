@@ -8,7 +8,7 @@ import (
 	"reshatel/limitations"
 )
 
-const eps = 0.001
+const eps = 0.000001
 
 func CreateMatrix(limitationsArr []limitations.LimitationInterface, dots []limitations.Dot) ([]limitations.Dot, error) {
 	amountOfEquations := 0
@@ -64,7 +64,7 @@ func CreateMatrix(limitationsArr []limitations.LimitationInterface, dots []limit
 			return nil, err
 		}
 
-		// fmt.Println("deltas:", deltas)
+		fmt.Println("deltas:", deltas)
 
 		for i := 0; i < len(lyambdas); i++ {
 			lyambdas[i] += deltas[i]
@@ -126,24 +126,27 @@ func gnuplot(dots []limitations.Dot) {
 }
 
 func main() {
-	dots := []limitations.Dot{{X: 0, Y: 0}, {X: 23, Y: 12}, {X: 0, Y: 0}, {X: 1, Y: 7}}
+	dots := []limitations.Dot{{X: 0, Y: 0}, {X: 23, Y: 12}, {X: 12, Y: -123}, {X: 54, Y: 32}, {X: 12, Y: -43}, {X: -97, Y: 43}}
 
 	limitations := []limitations.LimitationInterface{
-		// limitations.NewDistanceLimitation([]int{0, 1}, 6),
-		limitations.NewVerticalLimitation([]int{0, 1}),
-		// limitations.NewGorizontalLimitation([]int{0, 2}),
-		limitations.NewOverlapLimitation([]int{1, 2}),
+		//limitations.NewDistanceLimitation([]int{0, 1}, 6),
+		limitations.NewFixLimitation([]int{0}),
+		limitations.NewParallelLimitation([]int{0, 1, 2, 3}),
+		limitations.NewDistanceLimitation([]int{0, 1}, 5),
+		limitations.NewDistanceLimitation([]int{2, 3}, 5),
+		limitations.NewDistanceLimitation([]int{1, 2}, 5),
 		// limitations.NewParallelLimitation([]int{0, 1, 2, 3}),
 		// limitations.NewPerpendicularLimitation([]int{0, 1, 2, 3}),
-		// limitations.NewGorizontalLimitation([]int{0, 1}),
-		// limitations.NewDistanceLimitation([]int{0, 1}, 5),
+		//limitations.NewVerticalLimitation([]int{0, 1}),
+		limitations.NewVerticalLimitation([]int{1, 2}),
+		limitations.NewAngleLimitation([]int{2, 3, 4, 5}, 45),
+		limitations.NewDistanceLimitation([]int{4, 5}, 5),
+		limitations.NewOverlapLimitation([]int{3, 4}),
 		// limitations.NewDistanceLimitation([]int{0, 1}, 3),
-		limitations.NewAngleLimitation([]int{0, 1, 2, 3}, 1),
 		// limitations.NewGorizontalLimitation([]int{0, 1}),
-		limitations.NewDistanceLimitation([]int{0, 1}, 6),
-		limitations.NewDistanceLimitation([]int{2, 3}, 6),
-		// limitations.NewBelongLimitation([]int{0, 1, 2}),
-		// limitations.NewDistanceLimitation([]int{0, 1}, 6),
+		//limitations.NewDistanceLimitation([]int{0, 1}, 5),
+		//limitations.NewDistanceLimitation([]int{2, 3}, 5),
+		//limitations.NewBelongLimitation([]int{3, 4, 5}),
 	}
 
 	dots, err := CreateMatrix(limitations, dots)
@@ -216,7 +219,7 @@ func solve(A [][]float64, B []float64) ([]float64, error) {
 	for i := 0; i < len(x); i++ {
 		if math.IsNaN(x[i]) {
 			x[i] = 0
-			return nil, errors.New("чето непонятное вышло")
+			return nil, errors.New("тут тоже перебор")
 		}
 	}
 

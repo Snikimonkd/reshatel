@@ -42,38 +42,38 @@ func (f AngleLimitation) PlaceValues(matrix [][]float64, rightPart []float64, do
 	c := dots[cord4].X - dots[cord3].X
 	d := dots[cord4].Y - dots[cord3].Y
 
-	A := (a*c*c + b*c*c) - a*(c*c+d*d)*cosa*cosa
+	A := (a*c*c + b*c*d) - a*(c*c+d*d)*cosa*cosa
 	B := (b*d*d + a*c*d) - b*(c*c+d*d)*cosa*cosa
 	C := (c*a*a + a*b*d) - c*(a*a+b*b)*cosa*cosa
 	D := (d*b*b + a*b*c) - d*(a*a+b*b)*cosa*cosa
 
 	// края
-	matrix[m+cord1*2][equationsCounter] += 2 * D
-	matrix[m+cord1*2+1][equationsCounter] += 2 * C
+	matrix[m+cord1*2][equationsCounter] += -2 * A
+	matrix[m+cord1*2+1][equationsCounter] += -2 * B
 
-	matrix[m+cord2*2][equationsCounter] += -2 * D
-	matrix[m+cord2*2+1][equationsCounter] += -2 * C
+	matrix[m+cord2*2][equationsCounter] += 2 * A
+	matrix[m+cord2*2+1][equationsCounter] += 2 * B
 
-	matrix[m+cord3*2][equationsCounter] += 2 * B
-	matrix[m+cord3*2+1][equationsCounter] += 2 * A
+	matrix[m+cord3*2][equationsCounter] += -2 * C
+	matrix[m+cord3*2+1][equationsCounter] += -2 * D
 
-	matrix[m+cord4*2][equationsCounter] += -2 * B
-	matrix[m+cord4*2+1][equationsCounter] += -2 * A
+	matrix[m+cord4*2][equationsCounter] += 2 * C
+	matrix[m+cord4*2+1][equationsCounter] += 2 * D
 
 	// нижний правый угол
 
 	// ставим значения в правую часть
-	rightPart[m+cord1*2] += -2 * D * lyambdas[equationsCounter]
-	rightPart[m+cord1*2+1] += -2 * C * lyambdas[equationsCounter]
+	rightPart[m+cord1*2] += 2 * A * lyambdas[equationsCounter]
+	rightPart[m+cord1*2+1] += 2 * B * lyambdas[equationsCounter]
 
-	rightPart[m+cord2*2] += 2 * D * lyambdas[equationsCounter]
-	rightPart[m+cord2*2+1] += 2 * C * lyambdas[equationsCounter]
+	rightPart[m+cord2*2] += -2 * A * lyambdas[equationsCounter]
+	rightPart[m+cord2*2+1] += -2 * B * lyambdas[equationsCounter]
 
-	rightPart[m+cord3*2] += -2 * B * lyambdas[equationsCounter]
-	rightPart[m+cord3*2+1] += -2 * A * lyambdas[equationsCounter]
+	rightPart[m+cord3*2] += 2 * C * lyambdas[equationsCounter]
+	rightPart[m+cord3*2+1] += 2 * D * lyambdas[equationsCounter]
 
-	rightPart[m+cord4*2] += 2 * B * lyambdas[equationsCounter]
-	rightPart[m+cord4*2+1] += 2 * A * lyambdas[equationsCounter]
+	rightPart[m+cord4*2] += -2 * C * lyambdas[equationsCounter]
+	rightPart[m+cord4*2+1] += -2 * D * lyambdas[equationsCounter]
 
 	rightPart[equationsCounter] += -(a*a*c*c + 2*a*b*c*d + b*b*d*d - (a*a+b*b)*(c*c+d*d)*cosa*cosa)
 
